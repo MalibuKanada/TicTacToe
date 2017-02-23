@@ -4,7 +4,8 @@ public class GameApp {
     private Board board;
   //  private String gameState; // "PLAYING" "XWON" "OWON" "DRAW"
     private GameState gameState;
-    private String activePlayer;
+  //  private String activePlayer;
+    private ActivePlayer activePlayer;
     private Scanner scanner = new Scanner(System.in);
 
     public GameApp() {
@@ -26,11 +27,11 @@ public class GameApp {
             }
 
 
-            if(activePlayer.equals("X")) { // switch player
-                activePlayer = "O";
+            if(activePlayer==ActivePlayer.X) { // switch player
+                activePlayer = ActivePlayer.O;
             }
             else {
-                activePlayer = "X";
+                activePlayer = ActivePlayer.X;
             }
         } while (gameState==GameState.PLAYING);
 
@@ -44,7 +45,7 @@ public class GameApp {
     private void initGame(boolean isTwoPlayerGame) {
         boolean isTwoPlayerGame1 = isTwoPlayerGame;
         board.init();
-        activePlayer = "X";
+        activePlayer = ActivePlayer.X;
        // gameState = "PLAYING";
         gameState = GameState.PLAYING;
     }
@@ -53,17 +54,17 @@ public class GameApp {
         boolean validInput = false;
 
         do {
-          System.out.print("Player " + activePlayer + " enter your row(1-3) ");
+          System.out.print("Player " + activePlayer.toString() + " enter your row(1-3) ");
           int rowInput = scanner.nextInt() - 1;
-          System.out.print("Player " + activePlayer + " enter your column(1-3) ");
+          System.out.print("Player " + activePlayer.toString() + " enter your column(1-3) ");
           int columnInput = scanner.nextInt() - 1;
 
           if(rowInput>=0 && rowInput<Board.ROWS && columnInput>=0 && columnInput<Board.COLUMNS && board.cells[rowInput][columnInput].getContent().equals(" ")){
-              if (activePlayer.equals("X")) {
+              if (activePlayer==ActivePlayer.X) {
                   board.cells[rowInput][columnInput].putX();
               }
 
-              if (activePlayer.equals("O")) {
+              if (activePlayer==ActivePlayer.O) {
                   board.cells[rowInput][columnInput].putO();
               }
 
@@ -82,8 +83,8 @@ public class GameApp {
     }
 
     public void updateGame() {
-        if(board.hasWon(activePlayer)) {
-            if(activePlayer.equals("X")) {
+        if(board.hasWon(activePlayer.toString())) {
+            if(activePlayer==ActivePlayer.X) {
                 gameState = GameState.X_WON;
                 //gameState = "XWON";
             }
