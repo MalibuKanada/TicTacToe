@@ -2,7 +2,8 @@ import java.util.Scanner;
 
 public class GameApp {
     private Board board;
-    private String gameState; // "PLAYING" "XWON" "OWON" "DRAW"
+  //  private String gameState; // "PLAYING" "XWON" "OWON" "DRAW"
+    private GameState gameState;
     private String activePlayer;
     private Scanner scanner = new Scanner(System.in);
 
@@ -14,22 +15,24 @@ public class GameApp {
             playerMove();
             board.paint();
             updateGame();
-            if(gameState.equals("XWON")) {
+            if(gameState==GameState.X_WON) {
                 System.out.println("Player X won");
             }
-            if(gameState.equals("OWON")) {
+            if(gameState==GameState.O_WON) {
                 System.out.println("Player O won");
             }
-            if(gameState.equals("DRAW")) {
+            if(gameState==GameState.DRAW) {
                 System.out.println("Draw");
             }
-            if(activePlayer.equals("X")) {
+
+
+            if(activePlayer.equals("X")) { // switch player
                 activePlayer = "O";
             }
             else {
                 activePlayer = "X";
             }
-        } while (gameState.equals("PLAYING"));
+        } while (gameState==GameState.PLAYING);
 
         System.out.print("New Game (Y/N) ");
         String answer = scanner.nextLine();
@@ -42,7 +45,8 @@ public class GameApp {
         boolean isTwoPlayerGame1 = isTwoPlayerGame;
         board.init();
         activePlayer = "X";
-        gameState = "PLAYING";
+       // gameState = "PLAYING";
+        gameState = GameState.PLAYING;
     }
 
     private void playerMove() {
@@ -80,14 +84,17 @@ public class GameApp {
     public void updateGame() {
         if(board.hasWon(activePlayer)) {
             if(activePlayer.equals("X")) {
-                gameState = "XWON";
+                gameState = GameState.X_WON;
+                //gameState = "XWON";
             }
             else {
-                gameState = "OWON";
+                //gameState = "OWON";
+                gameState = GameState.O_WON;
             }
         }
         if(board.isDraw()) {
-            gameState = "DRAW";
+            //gameState = "DRAW";
+            gameState = GameState.DRAW;
         }
 
     }
