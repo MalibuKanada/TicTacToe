@@ -13,6 +13,24 @@ public class GameApp {
         initGame(true);
 
         do {
+            gameLoop();
+
+            System.out.print("New Game (Y/N) ");
+            String answer = scanner.next();
+            if(answer.equalsIgnoreCase("Y")) {
+                System.out.print("Starting new game..\n\n");
+                initGame(true);
+            }
+            else {
+                break;
+            }
+
+        } while(true);
+
+    }
+
+    private void gameLoop() {
+        do {
             playerMove();
             board.paint();
             updateGame();
@@ -33,13 +51,8 @@ public class GameApp {
             else {
                 activePlayer = ActivePlayer.X;
             }
-        } while (gameState==GameState.PLAYING);
 
-        System.out.print("New Game (Y/N) ");
-        String answer = scanner.nextLine();
-        if(answer.equalsIgnoreCase("Y")) {
-            System.out.print("Starting new game..");
-        }
+        } while (gameState==GameState.PLAYING);
     }
 
     private void initGame(boolean isTwoPlayerGame) {
