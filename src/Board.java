@@ -34,6 +34,29 @@ public class Board {
         }
     }
 
+    public boolean move(int rowInput, int columnInput, String activePlayer) {
+
+
+        if(rowInput>=0 && rowInput<ROWS && columnInput>=0 && columnInput<COLUMNS && cells[rowInput][columnInput].getContent().equals(" ")){
+            if (activePlayer.equals("X")) {
+                cells[rowInput][columnInput].putX();
+            }
+
+            if (activePlayer.equals("O")) {
+                cells[rowInput][columnInput].putO();
+            }
+
+            setCurrentRow(rowInput);
+            setCurrentColumn(columnInput);
+
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
     public void init() {
         for (int row=0; row<ROWS; row++) {
             for (int column=0; column<COLUMNS; column++) {
