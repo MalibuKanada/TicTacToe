@@ -35,7 +35,8 @@ public class Board {
     }
 
     public boolean move(int rowInput, int columnInput, String activePlayer) {
-
+        rowInput--;
+        columnInput--;
 
         if(rowInput>=0 && rowInput<ROWS && columnInput>=0 && columnInput<COLUMNS && cells[rowInput][columnInput].getContent().equals(" ")){
             if (activePlayer.equals("X")) {
