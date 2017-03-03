@@ -1,11 +1,14 @@
 import java.util.Scanner;
 import java.util.Random;
 
+
+
+
 public class GameApp3D {
     private Board board;
-    //  private String gameState; // "PLAYING" "XWON" "OWON" "DRAW"
+
     private GameState gameState;
-    //  private String activePlayer;
+
     private ActivePlayer activePlayer;
     private ComputerPlayer computerPlayer;
 
@@ -18,6 +21,27 @@ public class GameApp3D {
 
 
     public GameApp3D() {
+
+        /*
+        setLayout(new BorderLayout());
+        GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+
+        Canvas3D canvas = new Canvas3D(config);
+        add("North", new Label("This is the top"));
+        add("Center", canvas);
+        add("South", new Label("This is the bottom"));
+
+        SimpleUniverse universe = new SimpleUniverse(canvas);
+        BranchGroup branchGroup = new BranchGroup();
+        branchGroup.addChild(new ColorCube(0.3));
+        universe.getViewingPlatform().setNominalViewingTransform();
+        universe.addBranchGraph(branchGroup);
+
+*/
+
+
+
+
         playerOWinCount = 0;
         playerXWinCount = 0;
         board = new Board();
@@ -156,7 +180,10 @@ public class GameApp3D {
     }
 
     public static void main(String[] args) {
-        new GameApp();
+
+        MainWindow mainWindow  = new MainWindow("Tic Tac Toe");
+        GameApp3D app = new GameApp3D();
+
     }
 }
 
