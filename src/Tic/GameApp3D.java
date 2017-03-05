@@ -61,73 +61,89 @@ public class GameApp3D {
         initGame(isTwoPlayerGame);
 
         gameLoop();
+
+
+        Object[] options = {"Ja", "Nein"};
+        int choice = JOptionPane.showOptionDialog(mainWindow, "Neues Spiel", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (choice == JOptionPane.YES_OPTION) {
+            System.exit(1);
+                /*
+                isTwoPlayerGame = askIfTwoPlayerGame();
+                initGame(isTwoPlayerGame);
+                mainWindow.addEvent();
+                gameLoop();
+                */
+        }
+        else {
+            System.exit(0);
+        }
+
+
     }
 
     private void gameLoop() {
-        do {
+        test();
+        while(gameState==GameState.PLAYING) {
 
-        } while (gameState == GameState.PLAYING);
+
+        }
+        test();
     }
 
     private void initGame(boolean isTwoPlayerGame) {
         this.isTwoPlayerGame = isTwoPlayerGame;
         computerPlayer = ComputerPlayer.O;
-        board.init();
         activePlayer = ActivePlayer.X;
+
+        board.init();
         board.paint();
-        updateGame();
+
         gameState = GameState.PLAYING;
     }
 
-    public void updateGame() {
+    private boolean checkIfGameOver() {
         if(board.hasWon(activePlayer.toString())) {
             if(activePlayer==ActivePlayer.X) {
                 gameState = GameState.X_WON;
-                playerXWinCount++;
-                mainWindow.incXWon();
+                return true;
             }
             else {
                 gameState = GameState.O_WON;
-                playerOWinCount++;
-                mainWindow.incOWon();
+                return true;
             }
         }
         if(board.isDraw()) {
             gameState = GameState.DRAW;
+            return true;
         }
+        return false;
     }
 
-    private void refreshAll() {
+    private void afterMove() {
+
         board.paint();
-        updateGame();
-        String message;
-        if(gameState!=GameState.PLAYING) {
+
+        if(checkIfGameOver()) {
+            String message = null;
             if(gameState==GameState.X_WON) {
                 message = "X hat gewonnen!";
-                System.out.println(message);
-                JOptionPane.showMessageDialog(mainWindow, message);
+                mainWindow.incXWon();
             }
             else if(gameState==GameState.O_WON) {
                 message = "O hat gewonnen!";
-                System.out.println(message);
-                JOptionPane.showMessageDialog(mainWindow, message);
+                mainWindow.incOWon();
             }
             else if(gameState==GameState.DRAW) {
                 message = "Unentschieden!";
-                System.out.println(message);
             }
-            Object[] options = {"Ja", "Nein"};
-            int choice = JOptionPane.showOptionDialog(mainWindow, "Neues Spiel", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-            if (choice == JOptionPane.YES_OPTION) {
-                isTwoPlayerGame = askIfTwoPlayerGame();
-                initGame(isTwoPlayerGame);
-                mainWindow.addEvent();
-                gameLoop();
-            }
-            else {
-                System.exit(0);
-            }
+            System.out.println(message);
+            JOptionPane.showMessageDialog(mainWindow, message);
+            return;
         }
+        switchPlayer();
+    }
+
+    private void switchPlayer() {
         if(activePlayer==ActivePlayer.X) { // switch player
             activePlayer = ActivePlayer.O;
         }
@@ -142,7 +158,8 @@ public class GameApp3D {
         if(isTwoPlayerGame) {
             if(board.move(rowInput, columnInput, activePlayer.toString())){
                 System.out.println("Spieler " + activePlayer.toString() + " setzt auf Zeile " + rowInput + " Spalte "+ columnInput);
-                refreshAll();
+                mainWindow.placePiece(1, activePlayer.toString());
+                afterMove();
             }
             else {
                 System.out.println("Move not valid try again");

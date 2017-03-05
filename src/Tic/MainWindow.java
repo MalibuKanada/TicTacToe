@@ -39,10 +39,15 @@ public class MainWindow extends JFrame{
     private static final Color3f SPECULAR_LIGHT_COLOR = new Color3f(Color.WHITE);
     private static final Color3f AMBIENT_LIGHT_COLOR = new Color3f(Color.LIGHT_GRAY);
     private static final Color3f EMISSIVE_LIGHT_COLOR = new Color3f(Color.BLACK);
+
+
     public PickCanvas pickCanvas;
     private SimpleUniverse universe = null;
     private Scene woodenTable;
     public BranchGroup branchGroup;
+    public BranchGroup content;
+    public BranchGroup xPiece;
+    public BranchGroup oPiece;
     public GameApp3D app;
     public Canvas3D canvas;
 
@@ -56,16 +61,13 @@ public class MainWindow extends JFrame{
     JLabel footerText;
     JPanel footerPanel;
 
-    public void incXWon(){
-        Xwon++;
-        footerText.setText("X hat gewonnen " + Xwon + " mal -- O hat gewonnen: " + Owon + " mal");
+    Appearance whiteAppearance;
+    Appearance redAppearance;
+    Appearance darkgreyAppearance;
+    Appearance blueAppearance;
 
-    }
-
-    public void incOWon(){
-        Owon++;
-        footerText.setText("X hat gewonnen " + Xwon + " mal -- O hat gewonnen: " + Owon + " mal");
-    }
+    TransformGroup piecesTg[][];
+    Box pieces[][];
 
     public void refresh() {
         footerPanel.repaint();
@@ -84,16 +86,21 @@ public class MainWindow extends JFrame{
         footerText = new JLabel("X hat gewonnen " + Xwon + " mal -- O hat gewonnen: " + Owon + " mal");
         footerPanel.add(footerText);
 
+        //load models and textur
+
         Appearance woodTextureAppearance = null;
         Scene scene = null;
+        Scene sceneX = null;
+        Scene sceneO = null;
 
         branchGroup = new BranchGroup();
         try {
             scene = getSceneFromFile("src/table.obj");
+        //    sceneO = getSceneFromFile("src/Letter_O.obj");
             listSceneNamedObjects(scene);
-
+        //    listSceneNamedObjects(sceneX);
+        //    listSceneNamedObjects(sceneO);
             woodTextureAppearance = getAppearance("src/Wood_Table_C.jpg", canvas, 2048);
-
         }
         catch(java.io.IOException ex) {
             System.out.println(ex.getMessage());
@@ -103,9 +110,11 @@ public class MainWindow extends JFrame{
         Color darkgrey = new Color(200, 200, 200);
         Color white = new Color(255, 255, 255);
         Color red = new Color(255,0,0);
-        Appearance whiteAppearance = getAppearance(white);
-        Appearance redAppearance = getAppearance(red);
-        Appearance darkgreyAppearance = getAppearance(darkgrey);
+        Color blue = new Color(0,0,255);
+        whiteAppearance = getAppearance(white);
+        redAppearance = getAppearance(red);
+        darkgreyAppearance = getAppearance(darkgrey);
+        blueAppearance = getAppearance(blue);
         nameMap.get("unnamed_group").setAppearance(woodTextureAppearance);
         branchGroup.addChild(scene.getSceneGroup());
 
@@ -206,6 +215,16 @@ public class MainWindow extends JFrame{
         boxTG9.setTransform(transform);
         boxTG9.addChild(box9);
 
+        pieces = new Box[9][2];
+
+        pieces[0][0] = new Box(0.1f,.01f,0.1f, blueAppearance);
+
+        piecesTg = new TransformGroup[9][2];
+        piecesTg[0][0] = new TransformGroup();
+        Vector3f vector = new Vector3f(-0.4194f,.7f,-0.4194f);
+        piecesTg[0][0].setTransform();
+
+        branchGroup.addChild(piecesTg[0][0]);
         branchGroup.addChild(boxTG1);
         branchGroup.addChild(boxTG2);
         branchGroup.addChild(boxTG3);
@@ -216,15 +235,32 @@ public class MainWindow extends JFrame{
         branchGroup.addChild(boxTG8);
         branchGroup.addChild(boxTG9);
 
+
+
+     //   branchGroup.addChild(new Piece(-0.4194f, 0.8f, -0.4194f, blueAppearance));
+
         addLightsToUniverse();
 
         pickCanvas = new PickCanvas(canvas, branchGroup);
         pickCanvas.setMode(PickCanvas.GEOMETRY);
-
         addEvent();
 
         universe.getViewingPlatform().setNominalViewingTransform();
+
+        Box  = new Box(0.2097f,.01f,0.2097f, darkgreyAppearance);
+
+        content.addChild(piece);
+
         universe.addBranchGraph(branchGroup);
+        branchGroup.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+        branchGroup.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+        branchGroup.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+
+        content.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+        content.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
+        content.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+        branchGroup.addChild(content);
+
 
         add(canvas, BorderLayout.CENTER);
 
@@ -237,6 +273,39 @@ public class MainWindow extends JFrame{
         canvas.setDoubleBufferEnable(true);
         setSize(1024,768);
         setVisible(true);
+
+    }
+
+    public void placePiece(int fieldNumber, String XOrO) {
+        float x;
+        float y;
+        float z;
+        Appearance appearance;
+        switch(fieldNumber) {
+            case 1:
+                x = -0.4194f;
+                y = 0.7f;
+                z = -0.4194f;
+                break;
+            default:
+                x=0;
+                y=0;
+                z=0;
+                break;
+
+        }
+
+        if(XOrO.equals("X")) {
+            appearance = redAppearance;
+        }
+        else {
+            appearance = blueAppearance;
+        }
+
+
+        content.addChild(new Piece(x, y, z, appearance));
+
+
     }
 
     public void addEvent() {
@@ -312,7 +381,6 @@ public class MainWindow extends JFrame{
                         }
 
                         if(valid) {
-                            app.test();
                             app.playerMove(r,c);
                         }
                     }
@@ -344,14 +412,7 @@ public class MainWindow extends JFrame{
         this.app.test();
     }
 
-    private void addLightsToUniverse() {
-        Bounds influenceRegion = new BoundingSphere();
-        Color3f lightColor = new Color3f(Color.WHITE);
-        Vector3f lightDirection = new Vector3f(-1F, -1F, -1F);
-        DirectionalLight light = new DirectionalLight(lightColor, lightDirection);
-        light.setInfluencingBounds(influenceRegion);
-        branchGroup.addChild(light);
-    }
+////////////////
 
     public static Scene getSceneFromFile(String location) throws IOException {
         ObjectFile file = new ObjectFile(ObjectFile.RESIZE);
@@ -360,7 +421,6 @@ public class MainWindow extends JFrame{
 
     void listSceneNamedObjects(Scene scene) {
         Map<String, Shape3D> nameMap = scene.getNamedObjects();
-
         for (String name : nameMap.keySet()) {
             System.out.printf("Name: %s\n", name);
         }
@@ -397,6 +457,28 @@ public class MainWindow extends JFrame{
         texture.setImage(0, textureLoader.getImage());
 
         return texture;
+    }
+
+    private void addLightsToUniverse() {
+        Bounds influenceRegion = new BoundingSphere();
+        Color3f lightColor = new Color3f(Color.WHITE);
+        Vector3f lightDirection = new Vector3f(-1F, -1F, -1F);
+        DirectionalLight light = new DirectionalLight(lightColor, lightDirection);
+        light.setInfluencingBounds(influenceRegion);
+        branchGroup.addChild(light);
+    }
+
+    //////////////////////////////////
+
+    public void incXWon(){
+        Xwon++;
+        footerText.setText("X hat gewonnen " + Xwon + " mal -- O hat gewonnen: " + Owon + " mal");
+
+    }
+
+    public void incOWon(){
+        Owon++;
+        footerText.setText("X hat gewonnen " + Xwon + " mal -- O hat gewonnen: " + Owon + " mal");
     }
 
 }
