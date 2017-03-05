@@ -1,14 +1,13 @@
+package Tic;
+
 import java.util.Scanner;
 import java.util.Random;
 
-
-
-
-public class GameApp3D {
+public class GameApp {
     private Board board;
-
+  //  private String gameState; // "PLAYING" "XWON" "OWON" "DRAW"
     private GameState gameState;
-
+  //  private String activePlayer;
     private ActivePlayer activePlayer;
     private ComputerPlayer computerPlayer;
 
@@ -20,28 +19,7 @@ public class GameApp3D {
 
 
 
-    public GameApp3D() {
-
-        /*
-        setLayout(new BorderLayout());
-        GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-
-        Canvas3D canvas = new Canvas3D(config);
-        add("North", new Label("This is the top"));
-        add("Center", canvas);
-        add("South", new Label("This is the bottom"));
-
-        SimpleUniverse universe = new SimpleUniverse(canvas);
-        BranchGroup branchGroup = new BranchGroup();
-        branchGroup.addChild(new ColorCube(0.3));
-        universe.getViewingPlatform().setNominalViewingTransform();
-        universe.addBranchGraph(branchGroup);
-
-*/
-
-
-
-
+    public GameApp() {
         playerOWinCount = 0;
         playerXWinCount = 0;
         board = new Board();
@@ -117,7 +95,7 @@ public class GameApp3D {
         board.init();
         activePlayer = ActivePlayer.X;
 
-        // gameState = "PLAYING";
+       // gameState = "PLAYING";
         gameState = GameState.PLAYING;
     }
 
@@ -140,17 +118,17 @@ public class GameApp3D {
         boolean validInput = false;
 
         do {
-            System.out.print("Player " + activePlayer.toString() + " enter your row(1-3) ");
-            int rowInput = scanner.nextInt();
-            System.out.print("Player " + activePlayer.toString() + " enter your column(1-3) ");
-            int columnInput = scanner.nextInt();
+          System.out.print("Player " + activePlayer.toString() + " enter your row(1-3) ");
+          int rowInput = scanner.nextInt();
+          System.out.print("Player " + activePlayer.toString() + " enter your column(1-3) ");
+          int columnInput = scanner.nextInt();
 
-            if(board.move(rowInput, columnInput, activePlayer.toString())){
-                validInput = true;
-            }
-            else {
-                System.out.println("Move not valid try again");
-            }
+          if(board.move(rowInput, columnInput, activePlayer.toString())){
+              validInput = true;
+          }
+          else {
+              System.out.println("Move not valid try again");
+          }
 
         } while(!validInput);
 
@@ -180,10 +158,6 @@ public class GameApp3D {
     }
 
     public static void main(String[] args) {
-
-        MainWindow mainWindow  = new MainWindow("Tic Tac Toe");
-        GameApp3D app = new GameApp3D();
-
+        new GameApp();
     }
 }
-

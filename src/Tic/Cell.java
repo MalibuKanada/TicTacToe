@@ -1,3 +1,5 @@
+package Tic;
+
 public class Cell {
     private String content;
 
